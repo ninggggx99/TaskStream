@@ -1,5 +1,6 @@
 package se.edu.inclass;
 
+import com.sun.source.util.TaskListener;
 import se.edu.inclass.data.DataManager;
 import se.edu.inclass.task.Deadline;
 import se.edu.inclass.task.Task;
@@ -7,6 +8,8 @@ import se.edu.inclass.task.TaskNameComparator;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Main {
 
@@ -26,6 +29,10 @@ public class Main {
 
 
 
+        printDeadlinesUsingStreams(tasksData);
+        for(Task t: filterByString(tasksData,"11")){
+            System.out.println(t);
+        }
     }
 
     private static int countDeadlines(ArrayList<Task> tasksData) {
@@ -68,5 +75,19 @@ public class Main {
                 System.out.println(t);
             }
         }
+    }
+
+    public static void printDeadlinesUsingStreams(ArrayList<Task> tasksData){
+        tasksData.stream()
+                .filter((s) -> s instanceof Deadline)
+                .sorted((a,b) -> a.getDescription().toLowerCase().compareTo(b.getDescription().toLowerCase()))
+                .forEach(System.out::println);
+    }
+
+    public static ArrayList<Task> filterByString(ArrayList<Task> tasksdata, String filterString){
+        ArrayList<Task> filteredTaskList =  (ArrayList<Task>) tasksdata.stream()
+                .filter((s) -> s.getDescription().contains(filterString))
+                .collect(toList());
+        return filteredTaskList;
     }
 }
